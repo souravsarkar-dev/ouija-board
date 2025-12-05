@@ -209,6 +209,6 @@ This is a fictional entertainment application. No real spirits are involved. Use
 
 ---
 
-**Made with 💀 and ☕ by Sourav Sarkar**
+**Made with 💀 and ☕ by Sourav Sarkar,Sourasis Karak,Asis Sarkar**
 
 *"The spirits are waiting... will you dare to ask?"*
