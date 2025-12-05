@@ -2538,3 +2538,487 @@ h1::after {
     letter-spacing: 4px;
   }
 }
+
+/* Session Management Styles */
+.spirit-info {
+  text-align: center;
+  margin: 15px 0;
+  padding: 10px;
+  background: rgba(139, 0, 0, 0.2);
+  border: 2px solid #8b0000;
+  border-radius: 10px;
+  animation: spiritPulse 2s infinite;
+}
+
+.spirit-name {
+  color: #d4af37;
+  font-size: 14px;
+  margin: 0;
+}
+
+.spirit-name-text {
+  color: #ff0000;
+  font-size: 20px;
+  font-weight: bold;
+  text-shadow: 0 0 10px rgba(255, 0, 0, 0.8);
+  letter-spacing: 3px;
+  animation: nameGlow 1.5s infinite;
+}
+
+@keyframes spiritPulse {
+  0%, 100% { 
+    box-shadow: 0 0 10px rgba(139, 0, 0, 0.5);
+    transform: scale(1);
+  }
+  50% { 
+    box-shadow: 0 0 25px rgba(255, 0, 0, 0.8);
+    transform: scale(1.02);
+  }
+}
+
+@keyframes nameGlow {
+  0%, 100% { 
+    text-shadow: 0 0 10px rgba(255, 0, 0, 0.8);
+  }
+  50% { 
+    text-shadow: 0 0 20px rgba(255, 0, 0, 1), 0 0 30px rgba(255, 0, 0, 0.6);
+  }
+}
+
+.session-button {
+  padding: 15px 30px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-family: 'Courier New', monospace;
+  position: relative;
+  overflow: hidden;
+}
+
+.start-session {
+  background: linear-gradient(135deg, #1a5f1a 0%, #0d3d0d 100%);
+  color: #90ee90;
+  border: 2px solid #90ee90;
+}
+
+.start-session:hover {
+  background: linear-gradient(135deg, #2a7f2a 0%, #1a5f1a 100%);
+  box-shadow: 0 0 20px rgba(144, 238, 144, 0.5);
+  transform: translateY(-2px);
+  animation: startPulse 0.5s;
+}
+
+@keyframes startPulse {
+  0%, 100% { transform: translateY(-2px) scale(1); }
+  50% { transform: translateY(-2px) scale(1.05); }
+}
+
+.end-session {
+  background: linear-gradient(135deg, #8b0000 0%, #4d0000 100%);
+  color: #ff6b6b;
+  border: 2px solid #ff0000;
+  margin-top: 10px;
+}
+
+.end-session:hover:not(:disabled) {
+  background: linear-gradient(135deg, #a00000 0%, #6d0000 100%);
+  box-shadow: 0 0 30px rgba(255, 0, 0, 0.8);
+  transform: translateY(-2px);
+  animation: endShake 0.3s infinite;
+}
+
+@keyframes endShake {
+  0%, 100% { transform: translateY(-2px) translateX(0); }
+  25% { transform: translateY(-2px) translateX(-3px); }
+  75% { transform: translateY(-2px) translateX(3px); }
+}
+
+/* Session End Overlay - SCARY! */
+.session-end-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.95);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  animation: overlayAppear 0.3s;
+}
+
+@keyframes overlayAppear {
+  from { 
+    opacity: 0;
+    backdrop-filter: blur(0);
+  }
+  to { 
+    opacity: 1;
+    backdrop-filter: blur(10px);
+  }
+}
+
+.session-end-content {
+  text-align: center;
+  animation: contentShake 0.5s infinite;
+}
+
+@keyframes contentShake {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  10% { transform: translate(-10px, -5px) rotate(-2deg); }
+  20% { transform: translate(10px, 5px) rotate(2deg); }
+  30% { transform: translate(-8px, 3px) rotate(-1deg); }
+  40% { transform: translate(8px, -3px) rotate(1deg); }
+  50% { transform: translate(-5px, 5px) rotate(-1deg); }
+  60% { transform: translate(5px, -5px) rotate(1deg); }
+  70% { transform: translate(-3px, 3px) rotate(-0.5deg); }
+  80% { transform: translate(3px, -3px) rotate(0.5deg); }
+  90% { transform: translate(-2px, 2px) rotate(-0.5deg); }
+}
+
+.glitch {
+  font-size: 4em;
+  color: #ff0000;
+  text-shadow: 
+    0 0 20px rgba(255, 0, 0, 1),
+    0 0 40px rgba(255, 0, 0, 0.8),
+    0 0 60px rgba(255, 0, 0, 0.6);
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  letter-spacing: 5px;
+  animation: glitchText 0.3s infinite;
+  position: relative;
+  margin: 0;
+}
+
+.glitch::before {
+  content: attr(data-text);
+  position: absolute;
+  left: -2px;
+  top: 0;
+  color: #00ff00;
+  text-shadow: 0 0 10px rgba(0, 255, 0, 0.8);
+  animation: glitchBefore 0.3s infinite;
+  clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+}
+
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  left: 2px;
+  top: 0;
+  color: #0000ff;
+  text-shadow: 0 0 10px rgba(0, 0, 255, 0.8);
+  animation: glitchAfter 0.3s infinite;
+  clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+}
+
+@keyframes glitchText {
+  0%, 100% { 
+    transform: translate(0);
+    filter: hue-rotate(0deg);
+  }
+  20% { 
+    transform: translate(-5px, 5px);
+    filter: hue-rotate(90deg);
+  }
+  40% { 
+    transform: translate(5px, -5px);
+    filter: hue-rotate(180deg);
+  }
+  60% { 
+    transform: translate(-5px, -5px);
+    filter: hue-rotate(270deg);
+  }
+  80% { 
+    transform: translate(5px, 5px);
+    filter: hue-rotate(360deg);
+  }
+}
+
+@keyframes glitchBefore {
+  0%, 100% { left: -2px; }
+  20% { left: -5px; }
+  40% { left: 2px; }
+  60% { left: -3px; }
+  80% { left: 3px; }
+}
+
+@keyframes glitchAfter {
+  0%, 100% { left: 2px; }
+  20% { left: 5px; }
+  40% { left: -2px; }
+  60% { left: 3px; }
+  80% { left: -3px; }
+}
+
+.spirit-leaving {
+  font-size: 2em;
+  color: #fff;
+  margin-top: 30px;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+  animation: fadeInOut 1s infinite;
+  font-family: 'Courier New', monospace;
+}
+
+@keyframes fadeInOut {
+  0%, 100% { 
+    opacity: 0.3;
+    transform: scale(0.95);
+  }
+  50% { 
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+/* Extreme shake animation */
+@keyframes extremeShake {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  10% { transform: translate(-20px, -10px) rotate(-3deg); }
+  20% { transform: translate(20px, 10px) rotate(3deg); }
+  30% { transform: translate(-15px, 15px) rotate(-2deg); }
+  40% { transform: translate(15px, -15px) rotate(2deg); }
+  50% { transform: translate(-10px, 10px) rotate(-1deg); }
+  60% { transform: translate(10px, -10px) rotate(1deg); }
+  70% { transform: translate(-5px, 5px) rotate(-0.5deg); }
+  80% { transform: translate(5px, -5px) rotate(0.5deg); }
+  90% { transform: translate(-3px, 3px) rotate(-0.3deg); }
+}
+
+/* Candle System Styles */
+.candles-container {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin: 20px 0;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 15px;
+  border: 2px solid rgba(139, 111, 71, 0.3);
+}
+
+.candle {
+  position: relative;
+  width: 30px;
+  height: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 0.5s;
+}
+
+.candle.lit .wax {
+  background: linear-gradient(180deg, #f4e4c1 0%, #d4a574 50%, #c19a6b 100%);
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+}
+
+.candle.out .wax {
+  background: linear-gradient(180deg, #4a4a4a 0%, #2a2a2a 50%, #1a1a1a 100%);
+  box-shadow: none;
+}
+
+.flame {
+  width: 20px;
+  height: 30px;
+  background: radial-gradient(ellipse at center, 
+    #fff 0%, 
+    #ffeb3b 20%, 
+    #ff9800 40%, 
+    #ff5722 60%, 
+    transparent 80%);
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  position: absolute;
+  top: -25px;
+  animation: flameFlicker 0.3s infinite alternate;
+  filter: blur(1px);
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+.candle.lit .flame {
+  opacity: 1;
+}
+
+.candle.out .flame {
+  opacity: 0;
+  animation: flameOut 0.5s forwards;
+}
+
+@keyframes flameFlicker {
+  0% { 
+    transform: scale(1) translateY(0);
+    filter: blur(1px) brightness(1);
+  }
+  50% { 
+    transform: scale(1.05) translateY(-2px);
+    filter: blur(1.5px) brightness(1.2);
+  }
+  100% { 
+    transform: scale(0.95) translateY(1px);
+    filter: blur(1px) brightness(0.9);
+  }
+}
+
+@keyframes flameOut {
+  0% { 
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% { 
+    opacity: 0.5;
+    transform: scale(0.5) translateY(-10px);
+    filter: blur(3px);
+  }
+  100% { 
+    opacity: 0;
+    transform: scale(0) translateY(-20px);
+    filter: blur(5px);
+  }
+}
+
+.wick {
+  width: 3px;
+  height: 10px;
+  background: #2c1810;
+  position: absolute;
+  top: -8px;
+  border-radius: 50% 50% 0 0;
+}
+
+.candle.out .wick {
+  background: #000;
+}
+
+.wax {
+  width: 30px;
+  height: 70px;
+  border-radius: 5px 5px 0 0;
+  position: relative;
+  transition: all 0.5s;
+}
+
+.wax::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 35px;
+  height: 8px;
+  background: inherit;
+  border-radius: 50%;
+  opacity: 0.8;
+}
+
+/* Candle Warning */
+.candle-warning {
+  background: rgba(139, 0, 0, 0.9);
+  border: 3px solid #ff0000;
+  border-radius: 10px;
+  padding: 15px;
+  margin: 15px 0;
+  text-align: center;
+  animation: warningPulse 0.5s infinite, warningShake 0.3s;
+  box-shadow: 0 0 30px rgba(255, 0, 0, 0.8);
+}
+
+@keyframes warningPulse {
+  0%, 100% { 
+    box-shadow: 0 0 30px rgba(255, 0, 0, 0.8);
+    transform: scale(1);
+  }
+  50% { 
+    box-shadow: 0 0 50px rgba(255, 0, 0, 1);
+    transform: scale(1.02);
+  }
+}
+
+@keyframes warningShake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+.warning-text {
+  color: #fff;
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0 0 5px 0;
+  text-shadow: 0 0 10px rgba(255, 0, 0, 1);
+  animation: textBlink 0.5s infinite;
+}
+
+@keyframes textBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.warning-subtext {
+  color: #ffcccc;
+  font-size: 14px;
+  margin: 0;
+  font-style: italic;
+}
+
+/* Smoke effect when candle goes out */
+.candle.out::before {
+  content: '';
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 40px;
+  background: linear-gradient(180deg, 
+    rgba(100, 100, 100, 0.6) 0%, 
+    rgba(80, 80, 80, 0.4) 50%, 
+    transparent 100%);
+  border-radius: 50%;
+  animation: smokeRise 2s ease-out;
+  opacity: 0;
+  filter: blur(3px);
+}
+
+@keyframes smokeRise {
+  0% { 
+    opacity: 0.8;
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+  100% { 
+    opacity: 0;
+    transform: translateX(-50%) translateY(-40px) scale(1.5);
+  }
+}
+
+/* Glow effect around lit candles */
+.candle.lit::after {
+  content: '';
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 60px;
+  background: radial-gradient(circle, 
+    rgba(255, 200, 100, 0.3) 0%, 
+    rgba(255, 150, 50, 0.2) 40%, 
+    transparent 70%);
+  border-radius: 50%;
+  animation: candleGlow 2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes candleGlow {
+  0%, 100% { 
+    opacity: 0.6;
+    transform: translateX(-50%) scale(1);
+  }
+  50% { 
+    opacity: 0.9;
+    transform: translateX(-50%) scale(1.2);
+  }
+}

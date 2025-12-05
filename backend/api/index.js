@@ -101,13 +101,35 @@ const desperateResponses = [
 function analyzeQuestion(question) {
   const q = question.toLowerCase();
   
-  if (q.includes('stupid') || q.includes('kill')) return 'angry';
-  if (q.includes('boring') || q.length < 10) return 'irritated';
-  if (q.includes('who are you') || q.includes('go away')) return 'threatening';
-  if (q.includes('love') || q.includes('sad')) return 'sad';
-  if (q.includes('money') || q.includes('rich')) return 'mocking';
-  if (q.includes('help') || q.includes('save')) return 'desperate';
+  // Angry triggers - insults, threats, disrespect
+  const angryWords = ['stupid', 'kill', 'idiot', 'dumb', 'hate', 'ugly', 'worthless', 
+                      'pathetic', 'loser', 'die', 'death', 'murder', 'destroy', 
+                      'shut up', 'fuck', 'damn', 'hell', 'curse', 'evil spirit',
+                      'fake', 'liar', 'fraud', 'trick', 'joke', 'not real'];
+  if (angryWords.some(word => q.includes(word))) return 'angry';
   
+  // Irritated triggers - boring questions, repetition, short questions
+  if (q.length < 8) return 'irritated';
+  if (q.includes('boring') || q.includes('again') || q.includes('same')) return 'irritated';
+  if (q.includes('what') && q.length < 15) return 'irritated';
+  
+  // Threatening triggers - challenging, dismissive
+  if (q.includes('who are you') || q.includes('go away') || q.includes('leave')) return 'threatening';
+  if (q.includes('prove') || q.includes('show yourself') || q.includes('scared')) return 'threatening';
+  
+  // Sad triggers - emotional, loneliness
+  if (q.includes('love') || q.includes('sad') || q.includes('miss') || q.includes('alone')) return 'sad';
+  if (q.includes('cry') || q.includes('hurt') || q.includes('pain')) return 'sad';
+  
+  // Mocking triggers - money, materialistic
+  if (q.includes('money') || q.includes('rich') || q.includes('lottery')) return 'mocking';
+  if (q.includes('future') || q.includes('predict') || q.includes('tell me')) return 'mocking';
+  
+  // Desperate triggers - help, danger
+  if (q.includes('help') || q.includes('save') || q.includes('danger')) return 'desperate';
+  if (q.includes('trapped') || q.includes('escape') || q.includes('free')) return 'desperate';
+  
+  // Default to creepy
   return 'creepy';
 }
 

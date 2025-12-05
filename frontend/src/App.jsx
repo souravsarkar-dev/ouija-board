@@ -117,6 +117,21 @@ function App() {
           setTimeout(() => setShowMood(false), 4000);
         }
         
+        // Candle system - blow out candle if spirit is angry
+        if (data.mood === 'angry' && candles > 0) {
+          const newCandles = candles - 1;
+          setCandles(newCandles);
+          setShowCandleWarning(true);
+          setTimeout(() => setShowCandleWarning(false), 3000);
+          
+          if (newCandles === 0) {
+            // All candles out - spirit leaves!
+            setTimeout(() => {
+              endSession();
+            }, 2000);
+          }
+        }
+        
         if (data.mood === 'angry') {
           showScaryGhost();
           document.body.style.animation = 'shake 0.3s 5';
@@ -165,11 +180,74 @@ function App() {
 
   const [currentMood, setCurrentMood] = useState('');
   const [showMood, setShowMood] = useState(false);
+  const [sessionActive, setSessionActive] = useState(false);
+  const [spiritName, setSpiritName] = useState('');
+  const [showEndSession, setShowEndSession] = useState(false);
+  const [candles, setCandles] = useState(3);
+  const [showCandleWarning, setShowCandleWarning] = useState(false);
+
+  const spiritNames = [
+    'MALACHI', 'LILITH', 'AZRAEL', 'MORGANA', 'DAMIEN', 
+    'RAVEN', 'SALEM', 'LUCIFER', 'BELIAL', 'AZAZEL'
+  ];
+
+  const startNewSession = () => {
+    const randomSpirit = spiritNames[Math.floor(Math.random() * spiritNames.length)];
+    setSpiritName(randomSpirit);
+    setSessionActive(true);
+    setShowEndSession(false);
+    setAnswer('');
+    setDisplayedAnswer('');
+    setCandles(3);
+    setShowCandleWarning(false);
+    
+    // Scary entrance animation
+    document.body.style.animation = 'shake 0.5s 3';
+    document.body.style.filter = 'brightness(0.3)';
+    
+    setTimeout(() => {
+      document.body.style.filter = '';
+      document.body.style.animation = '';
+    }, 1500);
+  };
+
+  const endSession = () => {
+    setShowEndSession(true);
+    
+    // Scary exit animation
+    document.body.style.animation = 'shake 0.3s 5';
+    document.body.style.filter = 'hue-rotate(180deg) brightness(0.5)';
+    
+    try {
+      const scream = new Audio('https://www.myinstants.com/media/sounds/movie_1.mp3');
+      scream.volume = 0.5;
+      scream.play().catch(() => {});
+    } catch (e) {}
+    
+    setTimeout(() => {
+      document.body.style.filter = '';
+      document.body.style.animation = '';
+      setSessionActive(false);
+      setAnswer('');
+      setDisplayedAnswer('');
+      setSpiritName('');
+      setShowEndSession(false);
+    }, 2000);
+  };
 
   return (
     <div className="app">
       <div className="fog"></div>
       <div className="fog fog2"></div>
+      
+      {showEndSession && (
+        <div className="session-end-overlay">
+          <div className="session-end-content">
+            <h2 className="glitch" data-text="SESSION TERMINATED">SESSION TERMINATED</h2>
+            <p className="spirit-leaving">{spiritName} IS LEAVING...</p>
+          </div>
+        </div>
+      )}
       
       {showMood && currentMood && (
         <div className="mood-indicator" style={{ '--mood-color': getMoodDisplay(currentMood).color }}>
@@ -182,7 +260,36 @@ function App() {
       
       <div className="container">
         <h1>🕯️ OUIJA BOARD 🕯️</h1>
-        <p className="subtitle">Place your fingers on the planchette and ask your question</p>
+        
+        {sessionActive && (
+          <div className="candles-container">
+            {[1, 2, 3].map((num) => (
+              <div key={num} className={`candle ${num <= candles ? 'lit' : 'out'}`}>
+                <div className="flame"></div>
+                <div className="wick"></div>
+                <div className="wax"></div>
+              </div>
+            ))}
+          </div>
+        )}
+        
+        {showCandleWarning && (
+          <div className="candle-warning">
+            <p className="warning-text">⚠️ A CANDLE HAS BEEN EXTINGUISHED! ⚠️</p>
+            <p className="warning-subtext">The spirit grows angrier... {candles} candle{candles !== 1 ? 's' : ''} remaining</p>
+          </div>
+        )}
+        
+        {sessionActive && spiritName && (
+          <div className="spirit-info">
+            <p className="spirit-name">Connected to: <span className="spirit-name-text">{spiritName}</span></p>
+          </div>
+        )}
+        <p className="subtitle">
+          {sessionActive 
+            ? "The spirit awaits your question..." 
+            : "Click 'Start Session' to summon a spirit"}
+        </p>
         
         <div className="ouija-board">
           <div className="letters-row">
@@ -225,17 +332,28 @@ function App() {
         </div>
 
         <div className="input-section">
-          <input
-            type="text"
-            value={question}
-            onChange={(e) => setQuestion(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Ask your question..."
-            disabled={loading}
-          />
-          <button onClick={askSpirit} disabled={loading || !question.trim()}>
-            {loading ? 'Contacting spirits...' : 'Ask the Board'}
-          </button>
+          {!sessionActive ? (
+            <button onClick={startNewSession} className="session-button start-session">
+              🔮 Start New Session
+            </button>
+          ) : (
+            <>
+              <input
+                type="text"
+                value={question}
+                onChange={(e) => setQuestion(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Ask your question..."
+                disabled={loading}
+              />
+              <button onClick={askSpirit} disabled={loading || !question.trim()}>
+                {loading ? 'Contacting spirits...' : 'Ask the Board'}
+              </button>
+              <button onClick={endSession} className="session-button end-session" disabled={loading}>
+                ⚠️ End Session
+              </button>
+            </>
+          )}
         </div>
 
         {displayedAnswer && (
