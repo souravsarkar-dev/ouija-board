@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import './App.css';
+import UserProfile from './UserProfile';
 
 function App() {
   const [question, setQuestion] = useState('');
@@ -109,6 +110,7 @@ function App() {
       
       if (data.answer) {
         setAnswer(data.answer);
+        setSessionQuestions((q) => q + 1);
         
         // Show mood indicator
         if (data.mood) {
@@ -122,6 +124,7 @@ function App() {
           const newCandles = candles - 1;
           setCandles(newCandles);
           setShowCandleWarning(true);
+          setSessionAngry((a) => a + 1);
           setTimeout(() => setShowCandleWarning(false), 3000);
           
           if (newCandles === 0) {
@@ -185,11 +188,33 @@ function App() {
   const [showEndSession, setShowEndSession] = useState(false);
   const [candles, setCandles] = useState(3);
   const [showCandleWarning, setShowCandleWarning] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
+  const [sessionQuestions, setSessionQuestions] = useState(0);
+  const [sessionAngry, setSessionAngry] = useState(0);
 
   const spiritNames = [
     'MALACHI', 'LILITH', 'AZRAEL', 'MORGANA', 'DAMIEN', 
     'RAVEN', 'SALEM', 'LUCIFER', 'BELIAL', 'AZAZEL'
   ];
+
+  const saveSessionStats = (spirit, questions, angryCount) => {
+    // Update aggregate stats
+    const savedStats = JSON.parse(localStorage.getItem('ouija_stats') || '{}');
+    const spiritsContacted = savedStats.spiritsContacted || [];
+    spiritsContacted.push(spirit);
+    const updated = {
+      totalSessions: (savedStats.totalSessions || 0) + 1,
+      spiritsContacted,
+      questionsAsked: (savedStats.questionsAsked || 0) + questions,
+      angryEncounters: (savedStats.angryEncounters || 0) + angryCount,
+    };
+    localStorage.setItem('ouija_stats', JSON.stringify(updated));
+
+    // Append to session history
+    const history = JSON.parse(localStorage.getItem('ouija_session_history') || '[]');
+    history.push({ spiritName: spirit, questions, angryCount, date: new Date().toISOString() });
+    localStorage.setItem('ouija_session_history', JSON.stringify(history));
+  };
 
   const startNewSession = () => {
     const randomSpirit = spiritNames[Math.floor(Math.random() * spiritNames.length)];
@@ -200,6 +225,8 @@ function App() {
     setDisplayedAnswer('');
     setCandles(3);
     setShowCandleWarning(false);
+    setSessionQuestions(0);
+    setSessionAngry(0);
     
     // Scary entrance animation
     document.body.style.animation = 'shake 0.5s 3';
@@ -213,6 +240,11 @@ function App() {
 
   const endSession = () => {
     setShowEndSession(true);
+    
+    // Save session stats
+    if (spiritName) {
+      saveSessionStats(spiritName, sessionQuestions, sessionAngry);
+    }
     
     // Scary exit animation
     document.body.style.animation = 'shake 0.3s 5';
@@ -237,6 +269,7 @@ function App() {
 
   return (
     <div className="app">
+      {showProfile && <UserProfile onBack={() => setShowProfile(false)} />}
       <div className="fog"></div>
       <div className="fog fog2"></div>
       
@@ -259,7 +292,12 @@ function App() {
       )}
       
       <div className="container">
-        <h1>🕯️ OUIJA BOARD 🕯️</h1>
+        <div className="app-header">
+          <h1>🕯️ OUIJA BOARD 🕯️</h1>
+          <button className="profile-nav-btn" onClick={() => setShowProfile(true)} title="View Profile">
+            👤 Profile
+          </button>
+        </div>
         
         {sessionActive && (
           <div className="candles-container">
